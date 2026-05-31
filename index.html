@@ -6,14 +6,17 @@
 <title>番茄钟 - Pomodoro Timer</title>
 <style>
   :root {
-    --bg: #1a1a2e;
-    --card: #16213e;
+    --bg: #f0f2f5;
+    --card: #ffffff;
     --primary: #e94560;
-    --work: #e94560;
-    --break: #0f3460;
-    --text: #eee;
-    --text-dim: #a0a0b0;
-    --accent: #f5c518;
+    --text: #2d2d3a;
+    --text-dim: #8e8e9a;
+    --accent: #e8890c;
+    --ring-track: #e2e5ee;
+    --border: #e2e4ea;
+    --input-bg: #f8f9fc;
+    --shadow: 0 2px 16px rgba(0,0,0,0.06);
+    --shadow-lg: 0 4px 24px rgba(0,0,0,0.08);
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -44,6 +47,7 @@
     background: var(--card);
     border-radius: 32px;
     padding: 4px;
+    box-shadow: var(--shadow);
   }
   .tab {
     padding: 10px 20px;
@@ -75,7 +79,7 @@
   }
   .ring-bg {
     fill: none;
-    stroke: var(--card);
+    stroke: var(--ring-track);
     stroke-width: 10;
   }
   .ring-progress {
@@ -127,9 +131,9 @@
     background: var(--primary);
     color: #fff;
     font-size: 28px;
-    box-shadow: 0 4px 20px rgba(233, 69, 96, 0.4);
+    box-shadow: 0 4px 20px rgba(233, 69, 96, 0.3);
   }
-  .btn-main:hover { transform: scale(1.06); box-shadow: 0 6px 28px rgba(233, 69, 96, 0.55); }
+  .btn-main:hover { transform: scale(1.06); box-shadow: 0 6px 28px rgba(233, 69, 96, 0.45); }
   .btn-main:active { transform: scale(0.96); }
   .btn-icon {
     width: 48px; height: 48px;
@@ -137,8 +141,9 @@
     background: var(--card);
     color: var(--text);
     font-size: 20px;
+    box-shadow: var(--shadow);
   }
-  .btn-icon:hover { background: #1e2a4a; }
+  .btn-icon:hover { background: #f0f0f5; }
 
   /* ----- 统计卡片 ----- */
   .stats-row {
@@ -152,6 +157,7 @@
     border-radius: 16px;
     padding: 16px 12px;
     text-align: center;
+    box-shadow: var(--shadow);
   }
   .stat-value {
     font-size: 28px;
@@ -167,6 +173,36 @@
     letter-spacing: 1px;
   }
 
+  /* ----- 励志语录 ----- */
+  .quote-card {
+    width: 100%;
+    background: linear-gradient(135deg, #fff8f0, #fff5f5);
+    border-left: 4px solid var(--primary);
+    border-radius: 12px;
+    padding: 16px 18px;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+  .quote-icon {
+    position: absolute;
+    top: 8px; right: 12px;
+    font-size: 28px;
+    opacity: 0.15;
+  }
+  .quote-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #4a4a5a;
+    font-style: italic;
+    padding-right: 24px;
+  }
+  .quote-author {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 6px;
+  }
+
   /* ----- 设置面板 ----- */
   .settings-panel {
     background: var(--card);
@@ -176,6 +212,7 @@
     display: flex;
     flex-direction: column;
     gap: 14px;
+    box-shadow: var(--shadow);
   }
   .setting-row {
     display: flex;
@@ -189,9 +226,9 @@
   .setting-input {
     width: 72px;
     padding: 8px 10px;
-    border: 2px solid #2a3a5c;
+    border: 2px solid var(--border);
     border-radius: 10px;
-    background: transparent;
+    background: var(--input-bg);
     color: var(--text);
     font-size: 15px;
     text-align: center;
@@ -206,8 +243,8 @@
     top: 24px;
     left: 50%;
     transform: translateX(-50%);
-    background: var(--accent);
-    color: #1a1a2e;
+    background: #ffffff;
+    color: var(--text);
     padding: 12px 28px;
     border-radius: 12px;
     font-weight: 700;
@@ -216,6 +253,7 @@
     pointer-events: none;
     transition: opacity 0.3s;
     z-index: 100;
+    box-shadow: var(--shadow-lg);
   }
   .toast.show { opacity: 1; }
 
@@ -269,6 +307,13 @@
     </div>
   </div>
 
+  <!-- 励志语录 -->
+  <div class="quote-card" id="quoteCard">
+    <div class="quote-icon">💡</div>
+    <div class="quote-text" id="quoteText"></div>
+    <div class="quote-author" id="quoteAuthor"></div>
+  </div>
+
   <!-- 设置 -->
   <div class="settings-panel">
     <div class="setting-row">
@@ -305,35 +350,21 @@
 <!-- 通知横幅 -->
 <div class="toast" id="toast"></div>
 
-<!-- 音频 -->
-<audio id="audioEnd" preload="auto">
-  <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACAf39/f4B/f3+AgH9/f3+Af39/gIB/f39/gIB/f39/gH9/f4CAf39/f4B/f3+AgH9/f3+Af39/gIB/f39/gIB/f39/gH9/f4CAf39/f4B/f3+AgH9/f3+Af39/gIB/f39/gIB/f39/gH9/f4CAf39/f4B/f3+AgH9/f3+Af39/gIB/f39/gIB/f39/gH9/f4CAf39/f4B/f3+AgH9/f3+Af39/gIB/f39/gIB/f39/gH9/f4CA" type="audio/wav">
-</audio>
-
 <script>
 // ============ 状态 ============
-const CIRCUMFERENCE = 2 * Math.PI * 130; // r=130
+const CIRCUMFERENCE = 2 * Math.PI * 130;
 
 let state = {
-  mode: 'work',           // 'work' | 'shortbreak' | 'longbreak'
-  settings: {
-    work: 25,
-    shortBreak: 5,
-    longBreak: 15,
-    sound: true,
-  },
+  mode: 'work',
+  settings: { work: 25, shortBreak: 5, longBreak: 15, sound: true },
   running: false,
-  timeLeft: 25 * 60,      // 秒
+  timeLeft: 25 * 60,
   totalSeconds: 25 * 60,
   intervalId: null,
-  daily: {
-    date: '',
-    totalSeconds: 0,
-    sessions: 0,
-  }
+  daily: { date: '', totalSeconds: 0, sessions: 0 }
 };
 
-// ============ DOM 引用 ============
+// ============ DOM ============
 const $timeDisplay = document.getElementById('timeDisplay');
 const $timeLabel = document.getElementById('timeLabel');
 const $ringProgress = document.getElementById('ringProgress');
@@ -341,7 +372,8 @@ const $btnStart = document.getElementById('btnStart');
 const $sessionCount = document.getElementById('sessionCount');
 const $dailyTotal = document.getElementById('dailyTotal');
 const $toast = document.getElementById('toast');
-const $audioEnd = document.getElementById('audioEnd');
+const $quoteText = document.getElementById('quoteText');
+const $quoteAuthor = document.getElementById('quoteAuthor');
 
 // ============ 初始化 ============
 function init() {
@@ -352,7 +384,7 @@ function init() {
   updateDisplay();
   updateRing();
   updateStats();
-  // 同步设置输入框
+  updateQuote();
   document.getElementById('settingWork').value = state.settings.work;
   document.getElementById('settingShortBreak').value = state.settings.shortBreak;
   document.getElementById('settingLongBreak').value = state.settings.longBreak;
@@ -361,26 +393,16 @@ function init() {
 
 // ============ 设置持久化 ============
 function loadSettings() {
-  try {
-    const raw = localStorage.getItem('pomodoro_settings');
-    if (raw) Object.assign(state.settings, JSON.parse(raw));
-  } catch(_) {}
+  try { const r = localStorage.getItem('pomodoro_settings'); if (r) Object.assign(state.settings, JSON.parse(r)); } catch(_) {}
 }
-
-function saveSettings() {
-  localStorage.setItem('pomodoro_settings', JSON.stringify(state.settings));
-}
-
+function saveSettings() { localStorage.setItem('pomodoro_settings', JSON.stringify(state.settings)); }
 function updateSettings() {
   state.settings.work = parseInt(document.getElementById('settingWork').value) || 25;
   state.settings.shortBreak = parseInt(document.getElementById('settingShortBreak').value) || 5;
   state.settings.longBreak = parseInt(document.getElementById('settingLongBreak').value) || 15;
   state.settings.sound = document.getElementById('settingSound').checked;
   saveSettings();
-  // 如果当前没有在运行，重置以应用新时长
-  if (!state.running) {
-    resetTimer();
-  }
+  if (!state.running) resetTimer();
 }
 
 // ============ 每日统计 ============
@@ -388,39 +410,20 @@ function getTodayKey() {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
-
 function loadDaily() {
   try {
-    const raw = localStorage.getItem('pomodoro_daily');
-    if (raw) {
-      const data = JSON.parse(raw);
-      if (data.date === getTodayKey()) {
-        state.daily = data;
-      } else {
-        // 新的一天，重置
-        state.daily = { date: getTodayKey(), totalSeconds: 0, sessions: 0 };
-        saveDaily();
-      }
+    const r = localStorage.getItem('pomodoro_daily');
+    if (r) {
+      const d = JSON.parse(r);
+      state.daily = d.date === getTodayKey() ? d : { date: getTodayKey(), totalSeconds: 0, sessions: 0 };
     } else {
       state.daily = { date: getTodayKey(), totalSeconds: 0, sessions: 0 };
-      saveDaily();
     }
-  } catch(_) {
-    state.daily = { date: getTodayKey(), totalSeconds: 0, sessions: 0 };
-  }
+  } catch(_) { state.daily = { date: getTodayKey(), totalSeconds: 0, sessions: 0 }; }
 }
-
-function saveDaily() {
-  localStorage.setItem('pomodoro_daily', JSON.stringify(state.daily));
-}
-
+function saveDaily() { localStorage.setItem('pomodoro_daily', JSON.stringify(state.daily)); }
 function addCompletedSession() {
-  // 只在完成一个工作 session 时累加
-  if (state.mode === 'work') {
-    state.daily.totalSeconds += state.settings.work * 60;
-    state.daily.sessions += 1;
-    saveDaily();
-  }
+  if (state.mode === 'work') { state.daily.totalSeconds += state.settings.work * 60; state.daily.sessions += 1; saveDaily(); }
 }
 
 // ============ 模式切换 ============
@@ -436,203 +439,186 @@ function switchMode(mode) {
   updateModeUI();
   updateStartButton();
 }
-
 function getModeSeconds() {
-  switch (state.mode) {
-    case 'work': return state.settings.work * 60;
-    case 'shortbreak': return state.settings.shortBreak * 60;
-    case 'longbreak': return state.settings.longBreak * 60;
-    default: return state.settings.work * 60;
-  }
+  switch (state.mode) { case 'work': return state.settings.work * 60; case 'shortbreak': return state.settings.shortBreak * 60; case 'longbreak': return state.settings.longBreak * 60; default: return state.settings.work * 60; }
 }
-
 function updateModeUI() {
-  document.querySelectorAll('.tab').forEach(t => {
-    t.classList.toggle('active', t.dataset.mode === state.mode);
-  });
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.mode === state.mode));
   const root = document.documentElement;
   const labels = { work: '专注中', shortbreak: '短休中', longbreak: '长休中' };
-  const colors = { work: '#e94560', shortbreak: '#0f3460', longbreak: '#0f3460' };
+  const colors = { work: '#e94560', shortbreak: '#4a90d9', longbreak: '#4a90d9' };
   root.style.setProperty('--primary', colors[state.mode]);
   $ringProgress.style.stroke = colors[state.mode];
   $timeLabel.textContent = labels[state.mode];
-
-  // 给 btn-main 也更新颜色
   $btnStart.style.background = colors[state.mode];
-  $btnStart.style.boxShadow = `0 4px 20px ${colors[state.mode]}66`;
+  $btnStart.style.boxShadow = `0 4px 20px ${colors[state.mode]}4d`;
 }
 
-// ============ 计时器控制 ============
-function toggleTimer() {
-  if (state.running) {
-    pauseTimer();
-  } else {
-    startTimer();
-  }
-}
-
+// ============ 计时器 ============
+function toggleTimer() { state.running ? pauseTimer() : startTimer(); }
 function startTimer() {
-  if (state.timeLeft <= 0) {
-    resetTimer();
-  }
-  state.running = true;
-  updateStartButton();
+  if (state.timeLeft <= 0) resetTimer();
+  state.running = true; updateStartButton();
   state.intervalId = setInterval(tick, 1000);
 }
-
-function pauseTimer() {
-  state.running = false;
-  clearInterval(state.intervalId);
-  state.intervalId = null;
-  updateStartButton();
-}
-
-function stopTimer() {
-  clearInterval(state.intervalId);
-  state.intervalId = null;
-  state.running = false;
-}
-
-function resetTimer() {
-  stopTimer();
-  state.timeLeft = getModeSeconds();
-  state.totalSeconds = state.timeLeft;
-  updateDisplay();
-  updateRing();
-  updateStartButton();
-}
-
-function skipTimer() {
-  // 跳过当前阶段，直接触发完成逻辑
-  stopTimer();
-  onTimerComplete();
-}
+function pauseTimer() { state.running = false; clearInterval(state.intervalId); state.intervalId = null; updateStartButton(); }
+function stopTimer() { clearInterval(state.intervalId); state.intervalId = null; state.running = false; }
+function resetTimer() { stopTimer(); state.timeLeft = getModeSeconds(); state.totalSeconds = state.timeLeft; updateDisplay(); updateRing(); updateStartButton(); }
+function skipTimer() { stopTimer(); onTimerComplete(); }
 
 function tick() {
   if (state.timeLeft > 0) {
     state.timeLeft--;
-    updateDisplay();
-    updateRing();
-    // 更新页面标题
-    const m = Math.floor(state.timeLeft / 60);
-    const s = state.timeLeft % 60;
-    const emoji = state.mode === 'work' ? '🍅' : '☕';
-    document.title = `${emoji} ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} - 番茄钟`;
-  } else {
-    stopTimer();
-    onTimerComplete();
-  }
+    updateDisplay(); updateRing();
+    const m = Math.floor(state.timeLeft / 60), s = state.timeLeft % 60;
+    document.title = `${state.mode==='work'?'🍅':'☕'} ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} - 番茄钟`;
+  } else { stopTimer(); onTimerComplete(); }
 }
 
 function onTimerComplete() {
-  // 累加统计数据
-  addCompletedSession();
-  updateStats();
-
-  // 播放音效
-  if (state.settings.sound) {
-    playBeepSound();
-  }
-
-  // 显示通知
+  addCompletedSession(); updateStats();
+  if (state.settings.sound) playBeepSound();
   showToast(state.mode === 'work' ? '🍅 专注完成！休息一下吧~' : '⏰ 休息结束，继续加油！');
   document.title = state.mode === 'work' ? '🍅 时间到！' : '⏰ 休息结束！';
-
-  // 浏览器通知
   if (Notification.permission === 'granted') {
+    const quote = getDailyQuote();
     new Notification('番茄钟', {
-      body: state.mode === 'work' ? '专注时间结束，休息一下吧！' : '休息结束，开始新的番茄！',
+      body: state.mode === 'work' ? `专注完成！${quote.text} —${quote.author}` : '休息结束，开始新的番茄！',
       icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🍅</text></svg>'
     });
   }
-
-  // 自动切换到下一个模式
-  state.timeLeft = getModeSeconds();
-  state.totalSeconds = state.timeLeft;
-  updateDisplay();
-  updateRing();
-  updateStartButton();
+  state.timeLeft = getModeSeconds(); state.totalSeconds = state.timeLeft;
+  updateDisplay(); updateRing(); updateStartButton();
 }
 
-// ============ 铃声（用 Web Audio API 生成） ============
+// ============ 音效 ============
 function playBeepSound() {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const notes = [523.25, 659.25, 783.99]; // C5, E5, G5
-    notes.forEach((freq, i) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.value = freq;
-      gain.gain.setValueAtTime(0.3, ctx.currentTime + i * 0.15);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.15 + 0.4);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(ctx.currentTime + i * 0.15);
-      osc.stop(ctx.currentTime + i * 0.15 + 0.4);
+    [523.25, 659.25, 783.99].forEach((freq, i) => {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = 'sine'; o.frequency.value = freq;
+      g.gain.setValueAtTime(0.3, ctx.currentTime + i * 0.15);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.15 + 0.4);
+      o.connect(g); g.connect(ctx.destination);
+      o.start(ctx.currentTime + i * 0.15); o.stop(ctx.currentTime + i * 0.15 + 0.4);
     });
   } catch(_) {}
 }
 
-// ============ Toast 通知 ============
-function showToast(msg) {
-  $toast.textContent = msg;
-  $toast.classList.add('show');
-  setTimeout(() => $toast.classList.remove('show'), 2500);
-}
+// ============ Toast ============
+function showToast(msg) { $toast.textContent = msg; $toast.classList.add('show'); setTimeout(() => $toast.classList.remove('show'), 2500); }
 
-// ============ 显示更新 ============
+// ============ 显示 ============
 function updateDisplay() {
-  const m = Math.floor(state.timeLeft / 60);
-  const s = state.timeLeft % 60;
+  const m = Math.floor(state.timeLeft / 60), s = state.timeLeft % 60;
   $timeDisplay.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
 }
-
-function updateRing() {
-  const progress = state.timeLeft / state.totalSeconds;
-  const offset = CIRCUMFERENCE * (1 - progress);
-  $ringProgress.style.strokeDashoffset = offset;
-}
-
-function updateStartButton() {
-  $btnStart.textContent = state.running ? '⏸' : '▶';
-}
-
+function updateRing() { $ringProgress.style.strokeDashoffset = CIRCUMFERENCE * (1 - state.timeLeft / state.totalSeconds); }
+function updateStartButton() { $btnStart.textContent = state.running ? '⏸' : '▶'; }
 function updateStats() {
   $sessionCount.textContent = state.daily.sessions;
   const totalMin = Math.floor(state.daily.totalSeconds / 60);
-  const h = Math.floor(totalMin / 60);
-  const m = totalMin % 60;
-  $dailyTotal.textContent = `${h}h ${m}m`;
+  $dailyTotal.textContent = `${Math.floor(totalMin/60)}h ${totalMin%60}m`;
+}
+
+// ============ 每日励志语录 ============
+const QUOTES = [
+  { text: '不积跬步，无以至千里；不积小流，无以成江海。', author: '荀子' },
+  { text: '业精于勤，荒于嬉；行成于思，毁于随。', author: '韩愈' },
+  { text: '天行健，君子以自强不息。', author: '《周易》' },
+  { text: '千里之行，始于足下。', author: '老子' },
+  { text: '宝剑锋从磨砺出，梅花香自苦寒来。', author: '《警世贤文》' },
+  { text: '世上无难事，只要肯登攀。', author: '毛泽东' },
+  { text: '时间就像海绵里的水，只要愿挤，总还是有的。', author: '鲁迅' },
+  { text: '盛年不重来，一日难再晨。及时当勉励，岁月不待人。', author: '陶渊明' },
+  { text: '路漫漫其修远兮，吾将上下而求索。', author: '屈原' },
+  { text: '志当存高远。', author: '诸葛亮' },
+  { text: '博观而约取，厚积而薄发。', author: '苏轼' },
+  { text: '纸上得来终觉浅，绝知此事要躬行。', author: '陆游' },
+  { text: '为学须刚与恒，不刚则隋隳，不恒则退。', author: '冯子咸' },
+  { text: '学而不思则罔，思而不学则殆。', author: '孔子' },
+  { text: '莫等闲，白了少年头，空悲切。', author: '岳飞' },
+  { text: '少壮不努力，老大徒伤悲。', author: '《长歌行》' },
+  { text: '书山有路勤为径，学海无涯苦作舟。', author: '韩愈' },
+  { text: '有志者，事竟成。', author: '《后汉书》' },
+  { text: '锲而不舍，金石可镂。', author: '荀子' },
+  { text: '只要功夫深，铁杵磨成针。', author: '祝穆' },
+  { text: '滴水穿石，不是力量大，而是功夫深。', author: '谚语' },
+  { text: '每一个不曾起舞的日子，都是对生命的辜负。', author: '尼采' },
+  { text: '所谓天才，只不过是把别人喝咖啡的功夫都用在工作上了。', author: '鲁迅' },
+  { text: '人生在勤，不索何获。', author: '张衡' },
+  { text: '一万年太久，只争朝夕。', author: '毛泽东' },
+  { text: '今日事，今日毕。', author: '谚语' },
+  { text: '自律给我自由。', author: '康德' },
+  { text: '成功不是将来才有的，而是从决定去做的那一刻起持续累积而成。', author: '佚名' },
+  { text: '你只管努力，剩下的交给时间。', author: '佚名' },
+  { text: '种一棵树最好的时间是十年前，其次是现在。', author: '非洲谚语' },
+  { text: '耐心和恒心总会得到报酬的。', author: '爱因斯坦' },
+  { text: '学习永远不嫌晚。', author: '高尔基' },
+  { text: '读万卷书，行万里路。', author: '董其昌' },
+  { text: '知识就是力量。', author: '培根' },
+  { text: '学如逆水行舟，不进则退。', author: '《增广贤文》' },
+  { text: '黑发不知勤学早，白首方悔读书迟。', author: '颜真卿' },
+  { text: '熟读唐诗三百首，不会作诗也会吟。', author: '孙洙' },
+  { text: '三人行，必有我师焉。', author: '孔子' },
+  { text: '温故而知新，可以为师矣。', author: '孔子' },
+  { text: '天才就是百分之九十九的汗水加百分之一的灵感。', author: '爱迪生' },
+  { text: '一个人几乎可以在任何他怀有无限热忱的事情上成功。', author: '施瓦布' },
+  { text: '不要等待机会，而要创造机会。', author: '佚名' },
+  { text: '行动是治愈恐惧的良药，而犹豫拖延将不断滋养恐惧。', author: '佚名' },
+  { text: '每天告诉自己一次：我真的很不错。', author: '佚名' },
+  { text: '征服畏惧、建立自信的最快方法，就是去做你害怕的事。', author: '佚名' },
+  { text: '再长的路，一步步也能走完；再短的路，不迈开双脚也无法到达。', author: '佚名' },
+  { text: '任何的限制，都是从自己的内心开始的。', author: '佚名' },
+  { text: '失败只有一种，那就是半途而废。', author: '佚名' },
+  { text: '抱最大的希望，为最大的努力，做最坏的打算。', author: '佚名' },
+  { text: '你可以选择这样的三心二意：信心、恒心、决心；创意、乐意。', author: '佚名' },
+  { text: '人的才华就如海绵的水，没有外力的挤压，它是绝对流不出来的。', author: '佚名' },
+  { text: '路灯经过一夜的努力，才无愧地领受第一缕晨光的抚慰。', author: '佚名' },
+  { text: '不从泥泞不堪的小道上迈步，就踏不上铺满鲜花的大路。', author: '佚名' },
+  { text: '勤奋可以弥补聪明的不足，但聪明无法弥补懒惰的缺陷。', author: '佚名' },
+  { text: '用行动祈祷比用言语更能够使上帝了解。', author: '佚名' },
+  { text: '没有天生的信心，只有不断培养的信心。', author: '佚名' },
+  { text: '忍别人所不能忍的痛，吃别人所不能吃的苦，方能收获别人所得不到的收获。', author: '佚名' },
+  { text: '生命之灯因热情而点燃，生命之舟因拼搏而前行。', author: '佚名' },
+  { text: '拥有梦想只是一种智力，实现梦想才是一种能力。', author: '佚名' },
+  { text: '只有一条路不能选择——那就是放弃的路；只有一条路不能拒绝——那就是成长的路。', author: '佚名' },
+  { text: '人的生命似洪水在奔流，不遇着岛屿暗礁，难以激起美丽的浪花。', author: '奥斯特洛夫斯基' },
+  { text: '成功之花，人们往往惊羡它现时的明艳，然而当初它的芽儿却浸透了奋斗的泪泉。', author: '冰心' },
+  { text: '一个人最大的破产是绝望，最大的资产是希望。', author: '佚名' },
+  { text: '含泪播种的人一定能含笑收获。', author: '佚名' },
+  { text: '欲望以提升热忱，毅力以磨平高山。', author: '佚名' },
+];
+
+function getDayOfYear() {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  return Math.floor((now - start) / (1000 * 60 * 60 * 24));
+}
+
+function getDailyQuote() { return QUOTES[getDayOfYear() % QUOTES.length]; }
+
+function updateQuote() {
+  const q = getDailyQuote();
+  $quoteText.textContent = `"${q.text}"`;
+  $quoteAuthor.textContent = `— ${q.author}`;
 }
 
 // ============ 键盘快捷键 ============
 document.addEventListener('keydown', (e) => {
   if (e.target.tagName === 'INPUT') return;
   switch(e.code) {
-    case 'Space':
-      e.preventDefault();
-      toggleTimer();
-      break;
-    case 'KeyR':
-      resetTimer();
-      break;
-    case 'KeyS':
-      skipTimer();
-      break;
-    case 'Digit1':
-      switchMode('work');
-      break;
-    case 'Digit2':
-      switchMode('shortbreak');
-      break;
-    case 'Digit3':
-      switchMode('longbreak');
-      break;
+    case 'Space': e.preventDefault(); toggleTimer(); break;
+    case 'KeyR': resetTimer(); break;
+    case 'KeyS': skipTimer(); break;
+    case 'Digit1': switchMode('work'); break;
+    case 'Digit2': switchMode('shortbreak'); break;
+    case 'Digit3': switchMode('longbreak'); break;
   }
 });
 
-// ============ 请求通知权限 ============
+// ============ 通知权限 ============
 if ('Notification' in window && Notification.permission === 'default') {
   setTimeout(() => Notification.requestPermission(), 3000);
 }
