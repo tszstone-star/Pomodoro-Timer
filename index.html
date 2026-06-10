@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>番茄钟 - Pomodoro Timer</title>
 <style>
   :root {
+    /* 亮色（默认） */
     --bg: #f0f2f5;
     --card: #ffffff;
     --primary: #e94560;
@@ -17,6 +18,23 @@
     --input-bg: #f8f9fc;
     --shadow: 0 2px 16px rgba(0,0,0,0.06);
     --shadow-lg: 0 4px 24px rgba(0,0,0,0.08);
+    --quote-bg: linear-gradient(135deg, #fff8f0, #fff5f5);
+    --quote-text: #4a4a5a;
+    --btn-icon-hover: #f0f0f5;
+  }
+  [data-theme="dark"] {
+    --bg: #1a1a2e;
+    --card: #16213e;
+    --text: #e0e0e8;
+    --text-dim: #8a8a9a;
+    --ring-track: #1e2a4a;
+    --border: #2a3a5c;
+    --input-bg: #1a1a3e;
+    --shadow: 0 2px 16px rgba(0,0,0,0.35);
+    --shadow-lg: 0 4px 24px rgba(0,0,0,0.45);
+    --quote-bg: linear-gradient(135deg, #1e1e35, #1a1a30);
+    --quote-text: #c0c0d0;
+    --btn-icon-hover: #1e3050;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -29,6 +47,7 @@
     min-height: 100vh;
     user-select: none;
     -webkit-user-select: none;
+    transition: background 0.3s, color 0.3s;
   }
   .container {
     display: flex;
@@ -39,6 +58,24 @@
     max-width: 420px;
     width: 100%;
   }
+
+  /* ----- 主题切换按钮 ----- */
+  .theme-toggle {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: var(--card);
+    color: var(--text);
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: all 0.3s;
+    z-index: 10;
+  }
+  .theme-toggle:hover { transform: scale(1.1); }
 
   /* ----- 模式切换标签 ----- */
   .tabs {
@@ -143,7 +180,7 @@
     font-size: 20px;
     box-shadow: var(--shadow);
   }
-  .btn-icon:hover { background: #f0f0f5; }
+  .btn-icon:hover { background: var(--btn-icon-hover); }
 
   /* ----- 统计卡片 ----- */
   .stats-row {
@@ -176,7 +213,7 @@
   /* ----- 励志语录 ----- */
   .quote-card {
     width: 100%;
-    background: linear-gradient(135deg, #fff8f0, #fff5f5);
+    background: var(--quote-bg);
     border-left: 4px solid var(--primary);
     border-radius: 12px;
     padding: 16px 18px;
@@ -193,7 +230,7 @@
   .quote-text {
     font-size: 14px;
     line-height: 1.6;
-    color: #4a4a5a;
+    color: var(--quote-text);
     font-style: italic;
     padding-right: 24px;
   }
@@ -236,6 +273,16 @@
   }
   .setting-input:focus { outline: none; border-color: var(--primary); }
   .setting-unit { font-size: 13px; color: var(--text-dim); margin-left: 6px; }
+  .theme-select {
+    padding: 6px 10px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    background: var(--input-bg);
+    color: var(--text);
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .theme-select:focus { outline: none; border-color: var(--primary); }
 
   /* ----- 通知横幅 ----- */
   .toast {
@@ -243,7 +290,7 @@
     top: 24px;
     left: 50%;
     transform: translateX(-50%);
-    background: #ffffff;
+    background: var(--card);
     color: var(--text);
     padding: 12px 28px;
     border-radius: 12px;
@@ -261,10 +308,14 @@
     .timer-ring-wrapper, .timer-ring { width: 240px; height: 240px; }
     .time-display { font-size: 52px; }
     .tab { padding: 8px 14px; font-size: 13px; }
+    .theme-toggle { top: 10px; right: 10px; width: 36px; height: 36px; font-size: 18px; }
   }
 </style>
 </head>
 <body>
+
+<!-- 主题切换 -->
+<button class="theme-toggle" id="themeToggle" onclick="cycleTheme()" title="切换主题">🌓</button>
 
 <div class="container">
 
@@ -338,6 +389,16 @@
       </div>
     </div>
     <div class="setting-row">
+      <span class="setting-label">🌓 主题</span>
+      <div>
+        <select class="theme-select" id="settingTheme" onchange="updateSettings()">
+          <option value="light">☀️ 浅色</option>
+          <option value="dark">🌙 深色</option>
+          <option value="auto">🔄 跟随系统</option>
+        </select>
+      </div>
+    </div>
+    <div class="setting-row">
       <span class="setting-label">🔔 音效通知</span>
       <div>
         <input class="setting-input" id="settingSound" type="checkbox" checked onchange="updateSettings()" style="width:auto;accent-color:var(--primary);transform:scale(1.3)">
@@ -351,12 +412,13 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ============ 状态 ============
+// ============ 常量 ============
 const CIRCUMFERENCE = 2 * Math.PI * 130;
 
+// ============ 状态 ============
 let state = {
   mode: 'work',
-  settings: { work: 25, shortBreak: 5, longBreak: 15, sound: true },
+  settings: { work: 25, shortBreak: 5, longBreak: 15, sound: true, theme: 'auto' },
   running: false,
   timeLeft: 25 * 60,
   totalSeconds: 25 * 60,
@@ -374,21 +436,125 @@ const $dailyTotal = document.getElementById('dailyTotal');
 const $toast = document.getElementById('toast');
 const $quoteText = document.getElementById('quoteText');
 const $quoteAuthor = document.getElementById('quoteAuthor');
+const $themeToggle = document.getElementById('themeToggle');
+
+// ============ 主题 ============
+const THEME_ICONS = { light: '☀️', dark: '🌙', auto: '🌓' };
+const THEME_NEXT = { light: 'dark', dark: 'auto', auto: 'light' };
+
+function applyTheme(theme) {
+  if (theme === 'auto') {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+  } else {
+    document.documentElement.setAttribute('data-theme', theme);
+  }
+  $themeToggle.textContent = THEME_ICONS[theme];
+}
+
+function cycleTheme() {
+  const next = THEME_NEXT[state.settings.theme];
+  state.settings.theme = next;
+  saveSettings();
+  applyTheme(next);
+  document.getElementById('settingTheme').value = next;
+}
+
+// 监听系统主题变化
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+  if (state.settings.theme === 'auto') applyTheme('auto');
+});
 
 // ============ 初始化 ============
 function init() {
   loadSettings();
+  applyTheme(state.settings.theme);
   loadDaily();
-  state.timeLeft = state.settings.work * 60;
-  state.totalSeconds = state.timeLeft;
-  updateDisplay();
-  updateRing();
-  updateStats();
-  updateQuote();
   document.getElementById('settingWork').value = state.settings.work;
   document.getElementById('settingShortBreak').value = state.settings.shortBreak;
   document.getElementById('settingLongBreak').value = state.settings.longBreak;
   document.getElementById('settingSound').checked = state.settings.sound;
+  document.getElementById('settingTheme').value = state.settings.theme;
+
+  // 尝试恢复计时状态
+  const restored = restoreTimerState();
+  if (restored) {
+    // 倒计时还在进行中，自动恢复
+    updateDisplay();
+    updateRing();
+    updateModeUI();
+    updateStartButton();
+    startTimer(); // 重新启动 tick
+    showToast('🔄 已恢复上次计时');
+  } else {
+    // 没有可恢复的状态，或计时已过期
+    state.timeLeft = getModeSeconds();
+    state.totalSeconds = state.timeLeft;
+    updateDisplay();
+    updateRing();
+    updateStats();
+    updateQuote();
+    updateModeUI();
+  }
+
+  // 如果恢复了但 timeLeft 为 0（过期了），触发完成
+  if (state.timeLeft <= 0 && restored === false) {
+    const raw = localStorage.getItem('pomodoro_timer_state');
+    if (raw) {
+      // 确实是过期了，而不是没有保存状态
+      try {
+        const data = JSON.parse(raw);
+        state.mode = data.mode;
+        state.totalSeconds = data.totalSeconds;
+        state.timeLeft = 0;
+        clearTimerState();
+        onTimerComplete();
+      } catch(_) {}
+    }
+  }
+}
+
+// ============ 计时状态持久化 ============
+function saveTimerState() {
+  const data = {
+    mode: state.mode,
+    totalSeconds: state.totalSeconds,
+    isRunning: state.running,
+    timeLeft: state.timeLeft,
+    savedAt: Date.now(),
+    settingsWork: state.settings.work,
+    settingsShortBreak: state.settings.shortBreak,
+    settingsLongBreak: state.settings.longBreak,
+  };
+  localStorage.setItem('pomodoro_timer_state', JSON.stringify(data));
+}
+
+function restoreTimerState() {
+  try {
+    const raw = localStorage.getItem('pomodoro_timer_state');
+    if (!raw) return false;
+    const data = JSON.parse(raw);
+    state.mode = data.mode;
+    state.totalSeconds = data.totalSeconds;
+    // 同步设置（恢复时用当时的设置值）
+    if (data.settingsWork) state.settings.work = data.settingsWork;
+    if (data.settingsShortBreak) state.settings.shortBreak = data.settingsShortBreak;
+    if (data.settingsLongBreak) state.settings.longBreak = data.settingsLongBreak;
+    if (data.isRunning) {
+      const elapsed = Math.floor((Date.now() - data.savedAt) / 1000);
+      state.timeLeft = Math.max(0, data.totalSeconds - elapsed);
+      state.running = false;
+      return state.timeLeft > 0;
+    } else {
+      state.timeLeft = data.timeLeft;
+      state.running = false;
+      return false;
+    }
+  } catch(_) { return false; }
+}
+
+function clearTimerState() {
+  localStorage.removeItem('pomodoro_timer_state');
 }
 
 // ============ 设置持久化 ============
@@ -401,7 +567,9 @@ function updateSettings() {
   state.settings.shortBreak = parseInt(document.getElementById('settingShortBreak').value) || 5;
   state.settings.longBreak = parseInt(document.getElementById('settingLongBreak').value) || 15;
   state.settings.sound = document.getElementById('settingSound').checked;
+  state.settings.theme = document.getElementById('settingTheme').value;
   saveSettings();
+  applyTheme(state.settings.theme);
   if (!state.running) resetTimer();
 }
 
@@ -434,6 +602,7 @@ function switchMode(mode) {
   state.timeLeft = getModeSeconds();
   state.totalSeconds = state.timeLeft;
   state.running = false;
+  clearTimerState();
   updateDisplay();
   updateRing();
   updateModeUI();
@@ -458,13 +627,29 @@ function updateModeUI() {
 function toggleTimer() { state.running ? pauseTimer() : startTimer(); }
 function startTimer() {
   if (state.timeLeft <= 0) resetTimer();
-  state.running = true; updateStartButton();
+  state.running = true;
+  updateStartButton();
+  saveTimerState();
   state.intervalId = setInterval(tick, 1000);
 }
-function pauseTimer() { state.running = false; clearInterval(state.intervalId); state.intervalId = null; updateStartButton(); }
+function pauseTimer() {
+  state.running = false;
+  clearInterval(state.intervalId);
+  state.intervalId = null;
+  saveTimerState();
+  updateStartButton();
+}
 function stopTimer() { clearInterval(state.intervalId); state.intervalId = null; state.running = false; }
-function resetTimer() { stopTimer(); state.timeLeft = getModeSeconds(); state.totalSeconds = state.timeLeft; updateDisplay(); updateRing(); updateStartButton(); }
-function skipTimer() { stopTimer(); onTimerComplete(); }
+function resetTimer() {
+  stopTimer();
+  state.timeLeft = getModeSeconds();
+  state.totalSeconds = state.timeLeft;
+  clearTimerState();
+  updateDisplay();
+  updateRing();
+  updateStartButton();
+}
+function skipTimer() { stopTimer(); clearTimerState(); onTimerComplete(); }
 
 function tick() {
   if (state.timeLeft > 0) {
@@ -472,7 +657,9 @@ function tick() {
     updateDisplay(); updateRing();
     const m = Math.floor(state.timeLeft / 60), s = state.timeLeft % 60;
     document.title = `${state.mode==='work'?'🍅':'☕'} ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} - 番茄钟`;
-  } else { stopTimer(); onTimerComplete(); }
+    // 每10秒同步一次状态到 localStorage，防止意外关闭丢失进度
+    if (state.timeLeft % 10 === 0) saveTimerState();
+  } else { stopTimer(); clearTimerState(); onTimerComplete(); }
 }
 
 function onTimerComplete() {
@@ -607,7 +794,7 @@ function updateQuote() {
 
 // ============ 键盘快捷键 ============
 document.addEventListener('keydown', (e) => {
-  if (e.target.tagName === 'INPUT') return;
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
   switch(e.code) {
     case 'Space': e.preventDefault(); toggleTimer(); break;
     case 'KeyR': resetTimer(); break;
