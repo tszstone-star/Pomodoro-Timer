@@ -12,6 +12,7 @@
     --text: #2d2d3a;
     --text-dim: #8e8e9a;
     --accent: #e8890c;
+    --progress: #f5a623;
     --ring-track: #e2e5ee;
     --border: #e2e4ea;
     --input-bg: #f8f9fc;
@@ -40,28 +41,17 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    user-select: none;
-    -webkit-user-select: none;
+    background: var(--bg); color: var(--text);
+    display: flex; justify-content: center; align-items: center;
+    min-height: 100vh; user-select: none; -webkit-user-select: none;
     transition: background 0.4s, color 0.4s;
   }
   .app {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 24px;
-    padding: 40px 32px 60px;
-    max-width: 420px;
-    width: 100%;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 24px; padding: 40px 32px 60px;
+    max-width: 420px; width: 100%;
     transition: all 0.4s ease;
   }
-
-  /* ----- 主题切换按钮 ----- */
   .theme-toggle {
     position: fixed; top: 16px; right: 16px;
     width: 40px; height: 40px; border-radius: 50%;
@@ -70,12 +60,9 @@
     transition: all 0.3s; z-index: 10;
   }
   .theme-toggle:hover { transform: scale(1.1); }
-
-  /* ----- 模式切换标签 ----- */
   .tabs {
-    display: flex; gap: 4px;
-    background: var(--card); border-radius: 32px;
-    padding: 4px; box-shadow: var(--shadow);
+    display: flex; gap: 4px; background: var(--card);
+    border-radius: 32px; padding: 4px; box-shadow: var(--shadow);
     transition: opacity 0.3s ease, transform 0.3s ease;
   }
   .tab {
@@ -84,16 +71,11 @@
     border-radius: 28px; cursor: pointer; transition: all 0.3s; white-space: nowrap;
   }
   .tab.active { background: var(--primary); color: #fff; }
-
-  /* ----- 当前任务指示 ----- */
   .active-task-indicator {
     font-size: 16px; color: var(--text-dim);
-    text-align: center; min-height: 24px;
-    transition: all 0.4s ease;
+    text-align: center; min-height: 24px; transition: all 0.4s ease;
   }
   .active-task-indicator.has-task { color: var(--primary); font-weight: 600; font-size: 18px; }
-
-  /* ----- 圆形计时器 ----- */
   .timer-ring-wrapper {
     position: relative; width: 280px; height: 280px;
     transition: transform 0.4s ease, width 0.4s ease, height 0.4s ease;
@@ -104,22 +86,14 @@
     fill: none; stroke: var(--primary); stroke-width: 10;
     stroke-linecap: round; transition: stroke-dashoffset 0.3s linear;
   }
-  .timer-text {
-    position: absolute; top: 50%; left: 50%;
-    transform: translate(-50%, -50%); text-align: center;
-  }
+  .timer-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
   .time-display {
     font-size: 64px; font-weight: 700; letter-spacing: 2px;
     font-variant-numeric: tabular-nums;
     font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
     transition: font-size 0.4s ease;
   }
-  .time-label {
-    font-size: 14px; color: var(--text-dim);
-    margin-top: 4px; letter-spacing: 2px;
-  }
-
-  /* ----- 主区域 / 侧边栏 ----- */
+  .time-label { font-size: 14px; color: var(--text-dim); margin-top: 4px; letter-spacing: 2px; }
   .main { display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%; }
   .sidebar {
     width: 100%; display: flex; flex-direction: column; gap: 24px;
@@ -127,8 +101,6 @@
     overflow: hidden; max-height: 2000px;
   }
   .sidebar-section { transition: opacity 0.3s ease; }
-
-  /* ----- 控制按钮 ----- */
   .controls { display: flex; gap: 16px; align-items: center; }
   .btn {
     border: none; cursor: pointer; transition: all 0.2s;
@@ -144,21 +116,15 @@
   .btn-main:active { transform: scale(0.96); }
   .btn-icon {
     width: 48px; height: 48px; border-radius: 50%;
-    background: var(--card); color: var(--text); font-size: 20px;
-    box-shadow: var(--shadow);
+    background: var(--card); color: var(--text); font-size: 20px; box-shadow: var(--shadow);
   }
   .btn-icon:hover { background: var(--btn-icon-hover); }
-
-  /* ----- 统计卡片 ----- */
   .stats-row { display: flex; gap: 12px; width: 100%; }
   .stat-card {
     flex: 1; background: var(--card); border-radius: 16px;
     padding: 16px 12px; text-align: center; box-shadow: var(--shadow);
   }
-  .stat-value {
-    font-size: 28px; font-weight: 700; color: var(--accent);
-    font-family: 'SF Mono', 'Menlo', monospace;
-  }
+  .stat-value { font-size: 28px; font-weight: 700; color: var(--accent); font-family: 'SF Mono', 'Menlo', monospace; }
   .stat-label { font-size: 12px; color: var(--text-dim); margin-top: 4px; letter-spacing: 1px; }
 
   /* ----- 任务列表 ----- */
@@ -167,18 +133,25 @@
     border-radius: 16px; padding: 16px 18px; box-shadow: var(--shadow);
   }
   .task-section-header { font-size: 12px; color: var(--text-dim); margin-bottom: 10px; letter-spacing: 1px; }
-  .task-list { display: flex; flex-direction: column; gap: 4px; }
+  .task-list { display: flex; flex-direction: column; gap: 2px; }
   .task-item {
-    display: flex; align-items: center; gap: 10px;
+    display: flex; flex-direction: column;
     padding: 10px 12px; border-radius: 10px;
     cursor: pointer; transition: all 0.15s; position: relative;
+    border-left: 3px solid transparent;
   }
   .task-item:hover { background: var(--btn-icon-hover); }
-  .task-item.active { background: var(--task-active-bg); }
+  .task-item.active { background: var(--task-active-bg); border-left-color: var(--primary); }
   .task-item.active .task-name { font-weight: 700; color: var(--primary); }
+  .task-row { display: flex; align-items: center; gap: 8px; }
   .task-indicator { font-size: 12px; width: 16px; text-align: center; flex-shrink: 0; }
   .task-name { flex: 1; font-size: 14px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .task-pomos { font-size: 13px; color: var(--accent); font-weight: 600; flex-shrink: 0; }
+  .task-pomos {
+    font-size: 12px; color: var(--accent); font-weight: 600;
+    flex-shrink: 0; cursor: pointer; padding: 2px 6px;
+    border-radius: 6px; transition: background 0.15s;
+  }
+  .task-pomos:hover { background: var(--btn-icon-hover); }
   .task-delete {
     width: 24px; height: 24px; border-radius: 50%;
     border: none; background: transparent; color: var(--text-dim);
@@ -188,6 +161,50 @@
   }
   .task-item:hover .task-delete { opacity: 1; }
   .task-delete:hover { background: var(--primary); color: #fff; }
+
+  /* 进度条 */
+  .progress-bar {
+    height: 4px; background: var(--ring-track); border-radius: 2px;
+    overflow: hidden; margin-top: 6px; margin-left: 24px;
+  }
+  .progress-fill {
+    height: 100%; background: var(--progress);
+    border-radius: 2px; transition: width 0.5s ease;
+    min-width: 0;
+  }
+  .task-item .progress-bar { display: none; }
+  .task-item.has-estimate .progress-bar { display: block; }
+
+  /* 完成动画 */
+  @keyframes completePulse {
+    0% { transform: scale(1); }
+    30% { transform: scale(1.03); box-shadow: 0 0 20px rgba(245,166,35,0.4); }
+    100% { transform: scale(1); }
+  }
+  .task-item.just-completed {
+    animation: completePulse 0.6s ease;
+    background: var(--task-active-bg);
+  }
+
+  /* 预估编辑弹窗 */
+  .estimate-popup {
+    position: absolute; right: 8px; top: 100%;
+    background: var(--card); border: 2px solid var(--border);
+    border-radius: 10px; padding: 8px 10px; z-index: 10;
+    box-shadow: var(--shadow-lg); display: flex; gap: 6px; align-items: center;
+  }
+  .estimate-input {
+    width: 48px; padding: 4px 6px;
+    border: 2px solid var(--border); border-radius: 6px;
+    background: var(--input-bg); color: var(--text);
+    font-size: 14px; text-align: center; font-family: 'SF Mono', 'Menlo', monospace;
+  }
+  .estimate-input:focus { outline: none; border-color: var(--primary); }
+  .estimate-ok {
+    padding: 4px 8px; border: none; border-radius: 6px;
+    background: var(--primary); color: #fff; font-size: 12px; cursor: pointer;
+  }
+
   .task-input-row { margin-top: 8px; }
   .task-input {
     width: 100%; padding: 10px 14px;
@@ -198,8 +215,6 @@
   .task-input:focus { border-color: var(--primary); border-style: solid; }
   .task-input::placeholder { color: var(--text-dim); opacity: 0.6; }
   .task-empty { text-align: center; padding: 12px 0; font-size: 13px; color: var(--text-dim); opacity: 0.5; }
-
-  /* ----- 励志语录 ----- */
   .quote-card {
     width: 100%; background: var(--quote-bg);
     border-left: 4px solid var(--primary);
@@ -209,8 +224,6 @@
   .quote-icon { position: absolute; top: 8px; right: 12px; font-size: 28px; opacity: 0.15; }
   .quote-text { font-size: 14px; line-height: 1.6; color: var(--quote-text); font-style: italic; padding-right: 24px; }
   .quote-author { font-size: 12px; color: var(--text-dim); margin-top: 6px; }
-
-  /* ----- 设置面板 ----- */
   .settings-panel {
     background: var(--card); border-radius: 16px;
     padding: 20px; width: 100%; display: flex;
@@ -219,9 +232,8 @@
   .setting-row { display: flex; justify-content: space-between; align-items: center; }
   .setting-label { font-size: 14px; color: var(--text-dim); }
   .setting-input {
-    width: 72px; padding: 8px 10px;
-    border: 2px solid var(--border); border-radius: 10px;
-    background: var(--input-bg); color: var(--text);
+    width: 72px; padding: 8px 10px; border: 2px solid var(--border);
+    border-radius: 10px; background: var(--input-bg); color: var(--text);
     font-size: 15px; text-align: center; font-family: 'SF Mono', 'Menlo', monospace;
   }
   .setting-input:focus { outline: none; border-color: var(--primary); }
@@ -233,56 +245,23 @@
   }
   .theme-select:focus { outline: none; border-color: var(--primary); }
 
-  /* ============ 专注模式 ============ */
-  .app.focus-mode {
-    gap: 20px; padding-top: 60px;
-  }
-  .app.focus-mode .sidebar {
-    opacity: 0; max-height: 0; pointer-events: none;
-  }
-  .app.focus-mode .tabs {
-    opacity: 0; pointer-events: none;
-  }
-  .app.focus-mode .timer-ring-wrapper {
-    transform: scale(1.1);
-  }
-  .app.focus-mode .time-display {
-    font-size: 74px;
-  }
-  .app.focus-mode .active-task-indicator {
-    font-size: 22px; margin-top: 4px;
-  }
-  .app.focus-mode .active-task-indicator.has-task {
-    font-size: 24px;
-  }
-  .app.focus-mode .btn-icon {
-    display: none;
-  }
-  .app.focus-mode .btn-main {
-    transform: scale(1.2);
-  }
-
-  /* 休息模式 */
-  .app.break-mode {
-    gap: 20px; padding-top: 60px;
-  }
-  .app.break-mode .sidebar {
-    opacity: 0; max-height: 0; pointer-events: none;
-  }
-  .app.break-mode .tabs {
-    opacity: 1; pointer-events: auto;
-  }
-  .app.break-mode .time-display {
-    font-size: 68px;
-  }
-  .app.break-mode .btn-icon {
-    display: none;
-  }
-
-  /* ----- 通知横幅 ----- */
+  /* ===== 专注模式 ===== */
+  .app.focus-mode { gap: 20px; padding-top: 60px; }
+  .app.focus-mode .sidebar { opacity: 0; max-height: 0; pointer-events: none; }
+  .app.focus-mode .tabs { opacity: 0; pointer-events: none; }
+  .app.focus-mode .timer-ring-wrapper { transform: scale(1.1); }
+  .app.focus-mode .time-display { font-size: 74px; }
+  .app.focus-mode .active-task-indicator { font-size: 22px; margin-top: 4px; }
+  .app.focus-mode .active-task-indicator.has-task { font-size: 24px; }
+  .app.focus-mode .btn-icon { display: none; }
+  .app.focus-mode .btn-main { transform: scale(1.2); }
+  .app.break-mode { gap: 20px; padding-top: 60px; }
+  .app.break-mode .sidebar { opacity: 0; max-height: 0; pointer-events: none; }
+  .app.break-mode .tabs { opacity: 1; pointer-events: auto; }
+  .app.break-mode .time-display { font-size: 68px; }
+  .app.break-mode .btn-icon { display: none; }
   .toast {
-    position: fixed; top: 24px; left: 50%;
-    transform: translateX(-50%);
+    position: fixed; top: 24px; left: 50%; transform: translateX(-50%);
     background: var(--card); color: var(--text);
     padding: 12px 28px; border-radius: 12px;
     font-weight: 700; font-size: 15px;
@@ -291,7 +270,6 @@
     box-shadow: var(--shadow-lg);
   }
   .toast.show { opacity: 1; }
-
   @media (max-width: 400px) {
     .timer-ring-wrapper, .timer-ring { width: 240px; height: 240px; }
     .time-display { font-size: 52px; }
@@ -306,18 +284,13 @@
 <button class="theme-toggle" id="themeToggle" onclick="cycleTheme()" title="切换主题">🌓</button>
 
 <div class="app idle-mode" id="appRoot">
-
-  <!-- ===== 主区域（专注时保留） ===== -->
   <div class="main">
-
     <div class="tabs" id="modeTabs">
       <button class="tab active" data-mode="work" onclick="switchMode('work')">🍅 专注</button>
       <button class="tab" data-mode="shortbreak" onclick="switchMode('shortbreak')">☕ 短休</button>
       <button class="tab" data-mode="longbreak" onclick="switchMode('longbreak')">🌴 长休</button>
     </div>
-
     <div class="active-task-indicator" id="activeTaskIndicator"></div>
-
     <div class="timer-ring-wrapper">
       <svg class="timer-ring" viewBox="0 0 280 280">
         <circle class="ring-bg" cx="140" cy="140" r="130"/>
@@ -329,31 +302,19 @@
         <div class="time-label" id="timeLabel">专注中</div>
       </div>
     </div>
-
     <div class="controls">
       <button class="btn btn-icon" onclick="resetTimer()" title="重置">↺</button>
       <button class="btn btn-main" id="btnStart" onclick="toggleTimer()" title="开始">▶</button>
       <button class="btn btn-icon" onclick="skipTimer()" title="跳过">⏭</button>
     </div>
-
   </div>
-
-  <!-- ===== 侧边栏（专注时收起） ===== -->
   <div class="sidebar">
-
     <div class="sidebar-section">
       <div class="stats-row">
-        <div class="stat-card">
-          <div class="stat-value" id="sessionCount">0</div>
-          <div class="stat-label">今日番茄</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value" id="dailyTotal">0h 0m</div>
-          <div class="stat-label">今日累计</div>
-        </div>
+        <div class="stat-card"><div class="stat-value" id="sessionCount">0</div><div class="stat-label">今日番茄</div></div>
+        <div class="stat-card"><div class="stat-value" id="dailyTotal">0h 0m</div><div class="stat-label">今日累计</div></div>
       </div>
     </div>
-
     <div class="sidebar-section">
       <div class="task-section">
         <div class="task-section-header">📋 任务列表</div>
@@ -363,7 +324,6 @@
         </div>
       </div>
     </div>
-
     <div class="sidebar-section">
       <div class="quote-card" id="quoteCard">
         <div class="quote-icon">💡</div>
@@ -371,51 +331,16 @@
         <div class="quote-author" id="quoteAuthor"></div>
       </div>
     </div>
-
     <div class="sidebar-section">
       <div class="settings-panel">
-        <div class="setting-row">
-          <span class="setting-label">🍅 专注时长</span>
-          <div>
-            <input class="setting-input" id="settingWork" type="number" min="1" max="90" value="25" onchange="updateSettings()">
-            <span class="setting-unit">分钟</span>
-          </div>
-        </div>
-        <div class="setting-row">
-          <span class="setting-label">☕ 短休时长</span>
-          <div>
-            <input class="setting-input" id="settingShortBreak" type="number" min="1" max="30" value="5" onchange="updateSettings()">
-            <span class="setting-unit">分钟</span>
-          </div>
-        </div>
-        <div class="setting-row">
-          <span class="setting-label">🌴 长休时长</span>
-          <div>
-            <input class="setting-input" id="settingLongBreak" type="number" min="1" max="60" value="15" onchange="updateSettings()">
-            <span class="setting-unit">分钟</span>
-          </div>
-        </div>
-        <div class="setting-row">
-          <span class="setting-label">🌓 主题</span>
-          <div>
-            <select class="theme-select" id="settingTheme" onchange="updateSettings()">
-              <option value="light">☀️ 浅色</option>
-              <option value="dark">🌙 深色</option>
-              <option value="auto">🔄 跟随系统</option>
-            </select>
-          </div>
-        </div>
-        <div class="setting-row">
-          <span class="setting-label">🔔 音效通知</span>
-          <div>
-            <input class="setting-input" id="settingSound" type="checkbox" checked onchange="updateSettings()" style="width:auto;accent-color:var(--primary);transform:scale(1.3)">
-          </div>
-        </div>
+        <div class="setting-row"><span class="setting-label">🍅 专注时长</span><div><input class="setting-input" id="settingWork" type="number" min="1" max="90" value="25" onchange="updateSettings()"><span class="setting-unit">分钟</span></div></div>
+        <div class="setting-row"><span class="setting-label">☕ 短休时长</span><div><input class="setting-input" id="settingShortBreak" type="number" min="1" max="30" value="5" onchange="updateSettings()"><span class="setting-unit">分钟</span></div></div>
+        <div class="setting-row"><span class="setting-label">🌴 长休时长</span><div><input class="setting-input" id="settingLongBreak" type="number" min="1" max="60" value="15" onchange="updateSettings()"><span class="setting-unit">分钟</span></div></div>
+        <div class="setting-row"><span class="setting-label">🌓 主题</span><div><select class="theme-select" id="settingTheme" onchange="updateSettings()"><option value="light">☀️ 浅色</option><option value="dark">🌙 深色</option><option value="auto">🔄 跟随系统</option></select></div></div>
+        <div class="setting-row"><span class="setting-label">🔔 音效通知</span><div><input class="setting-input" id="settingSound" type="checkbox" checked onchange="updateSettings()" style="width:auto;accent-color:var(--primary);transform:scale(1.3)"></div></div>
       </div>
     </div>
-
   </div>
-
 </div>
 
 <div class="toast" id="toast"></div>
@@ -433,7 +358,7 @@ let state = {
   daily: { date: '', totalSeconds: 0, sessions: 0 },
   tasks: [],
   activeTaskId: null,
-  appMode: 'idle', // 'idle' | 'focus' | 'break'
+  appMode: 'idle',
 };
 
 const $appRoot = document.getElementById('appRoot');
@@ -451,11 +376,8 @@ const $taskList = document.getElementById('taskList');
 const $taskInput = document.getElementById('taskInput');
 const $activeTaskIndicator = document.getElementById('activeTaskIndicator');
 
-// ============ App Mode 切换 ============
-function setAppMode(newMode) {
-  state.appMode = newMode;
-  $appRoot.className = `app ${newMode}-mode`;
-}
+// ============ App Mode ============
+function setAppMode(newMode) { state.appMode = newMode; $appRoot.className = `app ${newMode}-mode`; }
 
 // ============ 主题 ============
 const THEME_ICONS = { light: '☀️', dark: '🌙', auto: '🌓' };
@@ -463,17 +385,13 @@ const THEME_NEXT = { light: 'dark', dark: 'auto', auto: 'light' };
 function applyTheme(theme) {
   if (theme === 'auto') {
     document.documentElement.setAttribute('data-theme', window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  } else {
-    document.documentElement.setAttribute('data-theme', theme);
-  }
+  } else { document.documentElement.setAttribute('data-theme', theme); }
   $themeToggle.textContent = THEME_ICONS[theme];
 }
 function cycleTheme() {
   const next = THEME_NEXT[state.settings.theme];
-  state.settings.theme = next;
-  saveSettings();
-  applyTheme(next);
-  document.getElementById('settingTheme').value = next;
+  state.settings.theme = next; saveSettings();
+  applyTheme(next); document.getElementById('settingTheme').value = next;
 }
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
   if (state.settings.theme === 'auto') applyTheme('auto');
@@ -484,13 +402,17 @@ function generateId() { return Date.now().toString(36) + Math.random().toString(
 function loadTasks() {
   try {
     const r = localStorage.getItem('pomodoro_tasks');
-    if (r) { const data = JSON.parse(r); state.tasks = data.tasks || []; state.activeTaskId = data.activeTaskId || null; }
+    if (r) { const data = JSON.parse(r); state.tasks = (data.tasks || []).map(t => ({ estimatedPomodoros: 4, ...t })); state.activeTaskId = data.activeTaskId || null; }
   } catch(_) { state.tasks = []; state.activeTaskId = null; }
 }
-function saveTasks() {
-  localStorage.setItem('pomodoro_tasks', JSON.stringify({ tasks: state.tasks, activeTaskId: state.activeTaskId }));
-}
+function saveTasks() { localStorage.setItem('pomodoro_tasks', JSON.stringify({ tasks: state.tasks, activeTaskId: state.activeTaskId })); }
 function getActiveTask() { return state.tasks.find(t => t.id === state.activeTaskId) || null; }
+
+function getProgress(task) {
+  if (!task.estimatedPomodoros || task.estimatedPomodoros <= 0) return 0;
+  return Math.min(100, Math.round((task.pomodoros / task.estimatedPomodoros) * 100));
+}
+
 function renderTasks() {
   $taskList.innerHTML = '';
   if (state.tasks.length === 0) {
@@ -498,27 +420,50 @@ function renderTasks() {
   } else {
     state.tasks.forEach(t => {
       const isActive = t.id === state.activeTaskId;
+      const progress = getProgress(t);
+      const hasEstimate = t.estimatedPomodoros > 0;
       const el = document.createElement('div');
-      el.className = 'task-item' + (isActive ? ' active' : '');
-      el.innerHTML = `<span class="task-indicator">${isActive ? '▶' : ''}</span><span class="task-name">${escapeHtml(t.name)}</span><span class="task-pomos">🍅×${t.pomodoros}</span><button class="task-delete" title="删除任务">✕</button>`;
-      el.addEventListener('click', (e) => { if (!e.target.closest('.task-delete')) switchTask(t.id); });
+      el.className = 'task-item' + (isActive ? ' active' : '') + (hasEstimate ? ' has-estimate' : '');
+      el.innerHTML = `
+        <div class="task-row">
+          <span class="task-indicator">${isActive ? '▶' : ''}</span>
+          <span class="task-name">${escapeHtml(t.name)}</span>
+          <span class="task-pomos" data-task-id="${t.id}" title="点击修改目标番茄数">🍅 ${t.pomodoros}${hasEstimate ? '/' + t.estimatedPomodoros : ''}</span>
+          <button class="task-delete" title="删除任务">✕</button>
+        </div>
+        ${hasEstimate ? `<div class="progress-bar"><div class="progress-fill" style="width:${progress}%"></div></div>` : ''}
+      `;
+      el.addEventListener('click', (e) => {
+        if (e.target.closest('.task-delete')) return;
+        if (e.target.closest('.task-pomos')) { showEstimatePopup(t, el); return; }
+        switchTask(t.id);
+      });
       el.querySelector('.task-delete').addEventListener('click', (e) => { e.stopPropagation(); deleteTask(t.id); });
       $taskList.appendChild(el);
     });
   }
   updateActiveTaskIndicator();
 }
+
 function escapeHtml(str) { const div = document.createElement('div'); div.textContent = str; return div.innerHTML; }
+
 function updateActiveTaskIndicator() {
   const task = getActiveTask();
-  if (task) { $activeTaskIndicator.textContent = `🎯 ${task.name}`; $activeTaskIndicator.className = 'active-task-indicator has-task'; }
-  else { $activeTaskIndicator.textContent = '选择任务开始专注'; $activeTaskIndicator.className = 'active-task-indicator'; }
+  if (task) {
+    const hasEst = task.estimatedPomodoros > 0;
+    $activeTaskIndicator.textContent = `🎯 ${task.name}${hasEst ? `  ${task.pomodoros}/${task.estimatedPomodoros}` : ''}`;
+    $activeTaskIndicator.className = 'active-task-indicator has-task';
+  } else {
+    $activeTaskIndicator.textContent = '选择任务开始专注';
+    $activeTaskIndicator.className = 'active-task-indicator';
+  }
 }
+
 function addTask(name) {
   const trimmed = name.trim();
   if (!trimmed) return;
   if (state.tasks.some(t => t.name === trimmed)) { showToast('任务已存在'); return; }
-  const task = { id: generateId(), name: trimmed, pomodoros: 0, createdAt: Date.now() };
+  const task = { id: generateId(), name: trimmed, pomodoros: 0, estimatedPomodoros: 4, createdAt: Date.now() };
   state.tasks.push(task); state.activeTaskId = task.id;
   saveTasks(); renderTasks();
 }
@@ -527,9 +472,37 @@ function deleteTask(id) {
   if (state.activeTaskId === id) state.activeTaskId = state.tasks.length > 0 ? state.tasks[0].id : null;
   saveTasks(); renderTasks();
 }
-function switchTask(id) {
-  if (state.activeTaskId === id) return;
-  state.activeTaskId = id; saveTasks(); renderTasks();
+function switchTask(id) { if (state.activeTaskId === id) return; state.activeTaskId = id; saveTasks(); renderTasks(); }
+
+function updateTaskEstimate(id, val) {
+  const task = state.tasks.find(t => t.id === id);
+  if (task) { task.estimatedPomodoros = Math.max(1, val); saveTasks(); renderTasks(); }
+}
+
+function showEstimatePopup(task, el) {
+  // 移除已有弹窗
+  document.querySelectorAll('.estimate-popup').forEach(p => p.remove());
+  const popup = document.createElement('div');
+  popup.className = 'estimate-popup';
+  popup.innerHTML = `<input class="estimate-input" type="number" min="1" value="${task.estimatedPomodoros}" autofocus><button class="estimate-ok">✓</button>`;
+  popup.querySelector('.estimate-ok').addEventListener('click', (e) => {
+    e.stopPropagation();
+    updateTaskEstimate(task.id, parseInt(popup.querySelector('.estimate-input').value) || 4);
+  });
+  popup.querySelector('.estimate-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.stopPropagation(); updateTaskEstimate(task.id, parseInt(e.target.value) || 4); }
+    if (e.key === 'Escape') { popup.remove(); }
+  });
+  popup.addEventListener('click', (e) => e.stopPropagation());
+  el.style.position = 'relative';
+  el.appendChild(popup);
+  setTimeout(() => popup.querySelector('.estimate-input').focus(), 50);
+  // 点击外部关闭
+  setTimeout(() => {
+    document.addEventListener('click', function closePopup(e) {
+      if (!popup.contains(e.target)) { popup.remove(); document.removeEventListener('click', closePopup); }
+    });
+  }, 100);
 }
 
 // ============ 初始化 ============
@@ -541,31 +514,16 @@ function init() {
   document.getElementById('settingLongBreak').value = state.settings.longBreak;
   document.getElementById('settingSound').checked = state.settings.sound;
   document.getElementById('settingTheme').value = state.settings.theme;
-
   const restored = restoreTimerState();
-  if (restored) {
-    updateDisplay(); updateRing(); updateModeUI(); updateStartButton();
-    startTimer(); // 内部会设置 appMode
-    showToast('🔄 已恢复上次计时');
-  } else {
-    state.timeLeft = getModeSeconds(); state.totalSeconds = state.timeLeft;
-    updateDisplay(); updateRing(); updateStats(); updateQuote(); updateModeUI();
-    setAppMode('idle');
-  }
-
+  if (restored) { updateDisplay(); updateRing(); updateModeUI(); updateStartButton(); startTimer(); showToast('🔄 已恢复上次计时'); }
+  else { state.timeLeft = getModeSeconds(); state.totalSeconds = state.timeLeft; updateDisplay(); updateRing(); updateStats(); updateQuote(); updateModeUI(); setAppMode('idle'); }
   if (state.timeLeft <= 0 && restored === false) {
     const raw = localStorage.getItem('pomodoro_timer_state');
-    if (raw) {
-      try {
-        const data = JSON.parse(raw);
-        state.mode = data.mode; state.totalSeconds = data.totalSeconds; state.timeLeft = 0;
-        clearTimerState(); onTimerComplete();
-      } catch(_) {}
-    }
+    if (raw) { try { const data = JSON.parse(raw); state.mode = data.mode; state.totalSeconds = data.totalSeconds; state.timeLeft = 0; clearTimerState(); onTimerComplete(); } catch(_) {} }
   }
 }
 
-// ============ 计时状态持久化 ============
+// ============ 计时持久化 ============
 function saveTimerState() {
   localStorage.setItem('pomodoro_timer_state', JSON.stringify({
     mode: state.mode, totalSeconds: state.totalSeconds,
@@ -575,26 +533,19 @@ function saveTimerState() {
 }
 function restoreTimerState() {
   try {
-    const raw = localStorage.getItem('pomodoro_timer_state');
-    if (!raw) return false;
-    const data = JSON.parse(raw);
-    state.mode = data.mode; state.totalSeconds = data.totalSeconds;
+    const raw = localStorage.getItem('pomodoro_timer_state'); if (!raw) return false;
+    const data = JSON.parse(raw); state.mode = data.mode; state.totalSeconds = data.totalSeconds;
     if (data.settingsWork) state.settings.work = data.settingsWork;
     if (data.settingsShortBreak) state.settings.shortBreak = data.settingsShortBreak;
     if (data.settingsLongBreak) state.settings.longBreak = data.settingsLongBreak;
-    if (data.isRunning) {
-      const elapsed = Math.floor((Date.now() - data.savedAt) / 1000);
-      state.timeLeft = Math.max(0, data.totalSeconds - elapsed);
-      state.running = false; return state.timeLeft > 0;
-    } else { state.timeLeft = data.timeLeft; state.running = false; return false; }
+    if (data.isRunning) { const elapsed = Math.floor((Date.now() - data.savedAt) / 1000); state.timeLeft = Math.max(0, data.totalSeconds - elapsed); state.running = false; return state.timeLeft > 0; }
+    else { state.timeLeft = data.timeLeft; state.running = false; return false; }
   } catch(_) { return false; }
 }
 function clearTimerState() { localStorage.removeItem('pomodoro_timer_state'); }
 
 // ============ 设置 ============
-function loadSettings() {
-  try { const r = localStorage.getItem('pomodoro_settings'); if (r) Object.assign(state.settings, JSON.parse(r)); } catch(_) {}
-}
+function loadSettings() { try { const r = localStorage.getItem('pomodoro_settings'); if (r) Object.assign(state.settings, JSON.parse(r)); } catch(_) {} }
 function saveSettings() { localStorage.setItem('pomodoro_settings', JSON.stringify(state.settings)); }
 function updateSettings() {
   state.settings.work = parseInt(document.getElementById('settingWork').value) || 25;
@@ -607,9 +558,7 @@ function updateSettings() {
 }
 
 // ============ 每日统计 ============
-function getTodayKey() {
-  const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-}
+function getTodayKey() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
 function loadDaily() {
   try {
     const r = localStorage.getItem('pomodoro_daily');
@@ -618,21 +567,11 @@ function loadDaily() {
   } catch(_) { state.daily = { date: getTodayKey(), totalSeconds: 0, sessions: 0 }; }
 }
 function saveDaily() { localStorage.setItem('pomodoro_daily', JSON.stringify(state.daily)); }
-function addCompletedSession() {
-  if (state.mode === 'work') { state.daily.totalSeconds += state.settings.work * 60; state.daily.sessions += 1; saveDaily(); }
-}
+function addCompletedSession() { if (state.mode === 'work') { state.daily.totalSeconds += state.settings.work * 60; state.daily.sessions += 1; saveDaily(); } }
 
 // ============ 模式切换 ============
-function switchMode(mode) {
-  if (state.mode === mode) return;
-  stopTimer(); state.mode = mode;
-  state.timeLeft = getModeSeconds(); state.totalSeconds = state.timeLeft; state.running = false;
-  clearTimerState(); setAppMode('idle');
-  updateDisplay(); updateRing(); updateModeUI(); updateStartButton();
-}
-function getModeSeconds() {
-  switch (state.mode) { case 'work': return state.settings.work * 60; case 'shortbreak': return state.settings.shortBreak * 60; case 'longbreak': return state.settings.longBreak * 60; default: return state.settings.work * 60; }
-}
+function switchMode(mode) { if (state.mode === mode) return; stopTimer(); state.mode = mode; state.timeLeft = getModeSeconds(); state.totalSeconds = state.timeLeft; state.running = false; clearTimerState(); setAppMode('idle'); updateDisplay(); updateRing(); updateModeUI(); updateStartButton(); }
+function getModeSeconds() { switch (state.mode) { case 'work': return state.settings.work * 60; case 'shortbreak': return state.settings.shortBreak * 60; case 'longbreak': return state.settings.longBreak * 60; default: return state.settings.work * 60; } }
 function updateModeUI() {
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.mode === state.mode));
   const colors = { work: '#e94560', shortbreak: '#4a90d9', longbreak: '#4a90d9' };
@@ -648,59 +587,52 @@ function updateModeUI() {
 function toggleTimer() { state.running ? pauseTimer() : startTimer(); }
 function startTimer() {
   if (state.timeLeft <= 0) resetTimer();
-  state.running = true; updateStartButton();
-  saveTimerState();
-  // 根据计时模式设置 app 状态
-  if (state.mode === 'work') setAppMode('focus');
-  else setAppMode('break');
+  state.running = true; updateStartButton(); saveTimerState();
+  if (state.mode === 'work') setAppMode('focus'); else setAppMode('break');
   state.intervalId = setInterval(tick, 1000);
 }
-function pauseTimer() {
-  state.running = false; clearInterval(state.intervalId); state.intervalId = null;
-  saveTimerState(); setAppMode('idle'); updateStartButton();
-}
+function pauseTimer() { state.running = false; clearInterval(state.intervalId); state.intervalId = null; saveTimerState(); setAppMode('idle'); updateStartButton(); }
 function stopTimer() { clearInterval(state.intervalId); state.intervalId = null; state.running = false; }
-function resetTimer() {
-  stopTimer(); state.timeLeft = getModeSeconds(); state.totalSeconds = state.timeLeft;
-  clearTimerState(); setAppMode('idle');
-  updateDisplay(); updateRing(); updateStartButton();
-}
+function resetTimer() { stopTimer(); state.timeLeft = getModeSeconds(); state.totalSeconds = state.timeLeft; clearTimerState(); setAppMode('idle'); updateDisplay(); updateRing(); updateStartButton(); }
 function skipTimer() { stopTimer(); clearTimerState(); onTimerComplete(); }
-
 function tick() {
-  if (state.timeLeft > 0) {
-    state.timeLeft--;
-    updateDisplay(); updateRing();
-    const m = Math.floor(state.timeLeft / 60), s = state.timeLeft % 60;
-    document.title = `${state.mode==='work'?'🍅':'☕'} ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} - 番茄钟`;
-    if (state.timeLeft % 10 === 0) saveTimerState();
-  } else { stopTimer(); clearTimerState(); onTimerComplete(); }
+  if (state.timeLeft > 0) { state.timeLeft--; updateDisplay(); updateRing(); const m = Math.floor(state.timeLeft / 60), s = state.timeLeft % 60; document.title = `${state.mode==='work'?'🍅':'☕'} ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} - 番茄钟`; if (state.timeLeft % 10 === 0) saveTimerState(); }
+  else { stopTimer(); clearTimerState(); onTimerComplete(); }
 }
 
 function onTimerComplete() {
   let taskMsg = '';
+  let completed = false;
   if (state.mode === 'work') {
     const task = getActiveTask();
-    if (task) { task.pomodoros += 1; saveTasks(); renderTasks(); taskMsg = `「${task.name}」累计 🍅×${task.pomodoros}`; }
+    if (task) {
+      task.pomodoros += 1;
+      saveTasks(); renderTasks();
+      const hasEst = task.estimatedPomodoros > 0;
+      taskMsg = `「${task.name}」${hasEst ? ` ${task.pomodoros}/${task.estimatedPomodoros}` : ` 🍅×${task.pomodoros}`}`;
+      // 检测完成
+      if (hasEst && task.pomodoros >= task.estimatedPomodoros) {
+        completed = true;
+        // 添加完成动画
+        const el = document.querySelector(`.task-pomos[data-task-id="${task.id}"]`);
+        if (el) {
+          const item = el.closest('.task-item');
+          if (item) { item.classList.add('just-completed'); setTimeout(() => item.classList.remove('just-completed'), 700); }
+        }
+        showToast(`🎉 「${task.name}」目标达成！`);
+      }
+    }
   }
   addCompletedSession(); updateStats();
   if (state.settings.sound) playBeepSound();
-
-  const mainMsg = state.mode === 'work'
-    ? (taskMsg ? `🍅 ${taskMsg}` : '🍅 专注完成！休息一下吧~')
-    : '⏰ 休息结束，继续加油！';
-  showToast(mainMsg);
+  const mainMsg = state.mode === 'work' ? (taskMsg ? `🍅 ${taskMsg}` : '🍅 专注完成！休息一下吧~') : '⏰ 休息结束，继续加油！';
+  if (!completed) showToast(mainMsg);
   document.title = state.mode === 'work' ? '🍅 时间到！' : '⏰ 休息结束！';
-
   if (Notification.permission === 'granted') {
     const quote = getDailyQuote();
-    const body = state.mode === 'work'
-      ? (taskMsg ? `${taskMsg}\n${quote.text} —${quote.author}` : `专注完成！${quote.text} —${quote.author}`)
-      : '休息结束，开始新的番茄！';
+    const body = state.mode === 'work' ? (taskMsg ? `${taskMsg}\n${quote.text} —${quote.author}` : `专注完成！${quote.text} —${quote.author}`) : '休息结束，开始新的番茄！';
     new Notification('番茄钟', { body, icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🍅</text></svg>' });
   }
-
-  // 完成后回到 idle，让用户看到侧边栏
   setAppMode('idle');
   state.timeLeft = getModeSeconds(); state.totalSeconds = state.timeLeft;
   updateDisplay(); updateRing(); updateStartButton();
@@ -708,141 +640,50 @@ function onTimerComplete() {
 
 // ============ 音效 ============
 function playBeepSound() {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    [523.25, 659.25, 783.99].forEach((freq, i) => {
-      const o = ctx.createOscillator(), g = ctx.createGain();
-      o.type = 'sine'; o.frequency.value = freq;
-      g.gain.setValueAtTime(0.3, ctx.currentTime + i * 0.15);
-      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.15 + 0.4);
-      o.connect(g); g.connect(ctx.destination);
-      o.start(ctx.currentTime + i * 0.15); o.stop(ctx.currentTime + i * 0.15 + 0.4);
-    });
-  } catch(_) {}
+  try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); [523.25, 659.25, 783.99].forEach((freq, i) => { const o = ctx.createOscillator(), g = ctx.createGain(); o.type = 'sine'; o.frequency.value = freq; g.gain.setValueAtTime(0.3, ctx.currentTime + i * 0.15); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.15 + 0.4); o.connect(g); g.connect(ctx.destination); o.start(ctx.currentTime + i * 0.15); o.stop(ctx.currentTime + i * 0.15 + 0.4); }); } catch(_) {}
 }
-
 // ============ Toast ============
 function showToast(msg) { $toast.textContent = msg; $toast.classList.add('show'); setTimeout(() => $toast.classList.remove('show'), 2500); }
-
 // ============ 显示 ============
-function updateDisplay() {
-  const m = Math.floor(state.timeLeft / 60), s = state.timeLeft % 60;
-  $timeDisplay.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-}
+function updateDisplay() { const m = Math.floor(state.timeLeft / 60), s = state.timeLeft % 60; $timeDisplay.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`; }
 function updateRing() { $ringProgress.style.strokeDashoffset = CIRCUMFERENCE * (1 - state.timeLeft / state.totalSeconds); }
 function updateStartButton() { $btnStart.textContent = state.running ? '⏸' : '▶'; }
-function updateStats() {
-  $sessionCount.textContent = state.daily.sessions;
-  const totalMin = Math.floor(state.daily.totalSeconds / 60);
-  $dailyTotal.textContent = `${Math.floor(totalMin/60)}h ${totalMin%60}m`;
-}
+function updateStats() { $sessionCount.textContent = state.daily.sessions; const totalMin = Math.floor(state.daily.totalSeconds / 60); $dailyTotal.textContent = `${Math.floor(totalMin/60)}h ${totalMin%60}m`; }
 
-// ============ 每日励志语录 ============
+// ============ 励志语录 ============
 const QUOTES = [
-  { text: '不积跬步，无以至千里；不积小流，无以成江海。', author: '荀子' },
-  { text: '业精于勤，荒于嬉；行成于思，毁于随。', author: '韩愈' },
-  { text: '天行健，君子以自强不息。', author: '《周易》' },
-  { text: '千里之行，始于足下。', author: '老子' },
-  { text: '宝剑锋从磨砺出，梅花香自苦寒来。', author: '《警世贤文》' },
-  { text: '世上无难事，只要肯登攀。', author: '毛泽东' },
-  { text: '时间就像海绵里的水，只要愿挤，总还是有的。', author: '鲁迅' },
-  { text: '盛年不重来，一日难再晨。及时当勉励，岁月不待人。', author: '陶渊明' },
-  { text: '路漫漫其修远兮，吾将上下而求索。', author: '屈原' },
-  { text: '志当存高远。', author: '诸葛亮' },
-  { text: '博观而约取，厚积而薄发。', author: '苏轼' },
-  { text: '纸上得来终觉浅，绝知此事要躬行。', author: '陆游' },
-  { text: '为学须刚与恒，不刚则隋隳，不恒则退。', author: '冯子咸' },
-  { text: '学而不思则罔，思而不学则殆。', author: '孔子' },
-  { text: '莫等闲，白了少年头，空悲切。', author: '岳飞' },
-  { text: '少壮不努力，老大徒伤悲。', author: '《长歌行》' },
-  { text: '书山有路勤为径，学海无涯苦作舟。', author: '韩愈' },
-  { text: '有志者，事竟成。', author: '《后汉书》' },
-  { text: '锲而不舍，金石可镂。', author: '荀子' },
-  { text: '只要功夫深，铁杵磨成针。', author: '祝穆' },
-  { text: '滴水穿石，不是力量大，而是功夫深。', author: '谚语' },
-  { text: '每一个不曾起舞的日子，都是对生命的辜负。', author: '尼采' },
-  { text: '所谓天才，只不过是把别人喝咖啡的功夫都用在工作上了。', author: '鲁迅' },
-  { text: '人生在勤，不索何获。', author: '张衡' },
-  { text: '一万年太久，只争朝夕。', author: '毛泽东' },
-  { text: '今日事，今日毕。', author: '谚语' },
-  { text: '自律给我自由。', author: '康德' },
-  { text: '成功不是将来才有的，而是从决定去做的那一刻起持续累积而成。', author: '佚名' },
-  { text: '你只管努力，剩下的交给时间。', author: '佚名' },
-  { text: '种一棵树最好的时间是十年前，其次是现在。', author: '非洲谚语' },
-  { text: '耐心和恒心总会得到报酬的。', author: '爱因斯坦' },
-  { text: '学习永远不嫌晚。', author: '高尔基' },
-  { text: '读万卷书，行万里路。', author: '董其昌' },
-  { text: '知识就是力量。', author: '培根' },
-  { text: '学如逆水行舟，不进则退。', author: '《增广贤文》' },
-  { text: '黑发不知勤学早，白首方悔读书迟。', author: '颜真卿' },
-  { text: '熟读唐诗三百首，不会作诗也会吟。', author: '孙洙' },
-  { text: '三人行，必有我师焉。', author: '孔子' },
-  { text: '温故而知新，可以为师矣。', author: '孔子' },
-  { text: '天才就是百分之九十九的汗水加百分之一的灵感。', author: '爱迪生' },
-  { text: '一个人几乎可以在任何他怀有无限热忱的事情上成功。', author: '施瓦布' },
-  { text: '不要等待机会，而要创造机会。', author: '佚名' },
-  { text: '行动是治愈恐惧的良药，而犹豫拖延将不断滋养恐惧。', author: '佚名' },
-  { text: '每天告诉自己一次：我真的很不错。', author: '佚名' },
-  { text: '征服畏惧、建立自信的最快方法，就是去做你害怕的事。', author: '佚名' },
-  { text: '再长的路，一步步也能走完；再短的路，不迈开双脚也无法到达。', author: '佚名' },
-  { text: '任何的限制，都是从自己的内心开始的。', author: '佚名' },
-  { text: '失败只有一种，那就是半途而废。', author: '佚名' },
-  { text: '抱最大的希望，为最大的努力，做最坏的打算。', author: '佚名' },
-  { text: '你可以选择这样的三心二意：信心、恒心、决心；创意、乐意。', author: '佚名' },
-  { text: '人的才华就如海绵的水，没有外力的挤压，它是绝对流不出来的。', author: '佚名' },
-  { text: '路灯经过一夜的努力，才无愧地领受第一缕晨光的抚慰。', author: '佚名' },
-  { text: '不从泥泞不堪的小道上迈步，就踏不上铺满鲜花的大路。', author: '佚名' },
-  { text: '勤奋可以弥补聪明的不足，但聪明无法弥补懒惰的缺陷。', author: '佚名' },
-  { text: '用行动祈祷比用言语更能够使上帝了解。', author: '佚名' },
-  { text: '没有天生的信心，只有不断培养的信心。', author: '佚名' },
-  { text: '忍别人所不能忍的痛，吃别人所不能吃的苦，方能收获别人所得不到的收获。', author: '佚名' },
-  { text: '生命之灯因热情而点燃，生命之舟因拼搏而前行。', author: '佚名' },
-  { text: '拥有梦想只是一种智力，实现梦想才是一种能力。', author: '佚名' },
-  { text: '只有一条路不能选择——那就是放弃的路；只有一条路不能拒绝——那就是成长的路。', author: '佚名' },
-  { text: '人的生命似洪水在奔流，不遇着岛屿暗礁，难以激起美丽的浪花。', author: '奥斯特洛夫斯基' },
-  { text: '成功之花，人们往往惊羡它现时的明艳，然而当初它的芽儿却浸透了奋斗的泪泉。', author: '冰心' },
-  { text: '一个人最大的破产是绝望，最大的资产是希望。', author: '佚名' },
-  { text: '含泪播种的人一定能含笑收获。', author: '佚名' },
-  { text: '欲望以提升热忱，毅力以磨平高山。', author: '佚名' },
+  { text:'不积跬步，无以至千里；不积小流，无以成江海。',author:'荀子' },{ text:'业精于勤，荒于嬉；行成于思，毁于随。',author:'韩愈' },
+  { text:'天行健，君子以自强不息。',author:'《周易》' },{ text:'千里之行，始于足下。',author:'老子' },
+  { text:'宝剑锋从磨砺出，梅花香自苦寒来。',author:'《警世贤文》' },{ text:'世上无难事，只要肯登攀。',author:'毛泽东' },
+  { text:'时间就像海绵里的水，只要愿挤，总还是有的。',author:'鲁迅' },{ text:'盛年不重来，一日难再晨。',author:'陶渊明' },
+  { text:'路漫漫其修远兮，吾将上下而求索。',author:'屈原' },{ text:'志当存高远。',author:'诸葛亮' },
+  { text:'博观而约取，厚积而薄发。',author:'苏轼' },{ text:'纸上得来终觉浅，绝知此事要躬行。',author:'陆游' },
+  { text:'学而不思则罔，思而不学则殆。',author:'孔子' },{ text:'莫等闲，白了少年头，空悲切。',author:'岳飞' },
+  { text:'少壮不努力，老大徒伤悲。',author:'《长歌行》' },{ text:'书山有路勤为径，学海无涯苦作舟。',author:'韩愈' },
+  { text:'有志者，事竟成。',author:'《后汉书》' },{ text:'锲而不舍，金石可镂。',author:'荀子' },
+  { text:'滴水穿石，不是力量大，而是功夫深。',author:'谚语' },{ text:'每一个不曾起舞的日子，都是对生命的辜负。',author:'尼采' },
+  { text:'一万年太久，只争朝夕。',author:'毛泽东' },{ text:'自律给我自由。',author:'康德' },
+  { text:'你只管努力，剩下的交给时间。',author:'佚名' },{ text:'种一棵树最好的时间是十年前，其次是现在。',author:'非洲谚语' },
+  { text:'耐心和恒心总会得到报酬的。',author:'爱因斯坦' },{ text:'学习永远不嫌晚。',author:'高尔基' },
+  { text:'知识就是力量。',author:'培根' },{ text:'三人行，必有我师焉。',author:'孔子' },
+  { text:'温故而知新，可以为师矣。',author:'孔子' },{ text:'天才就是百分之九十九的汗水加百分之一的灵感。',author:'爱迪生' },
+  { text:'行动是治愈恐惧的良药，而犹豫拖延将不断滋养恐惧。',author:'佚名' },{ text:'再长的路，一步步也能走完。',author:'佚名' },
+  { text:'失败只有一种，那就是半途而废。',author:'佚名' },{ text:'含泪播种的人一定能含笑收获。',author:'佚名' },
+  { text:'成熟的人不问过去，聪明的人不问现在，豁达的人不问未来。',author:'佚名' },{ text:'欲望以提升热忱，毅力以磨平高山。',author:'佚名' },
+  { text:'一个人最大的破产是绝望，最大的资产是希望。',author:'佚名' },
 ];
-function getDayOfYear() {
-  const now = new Date(); const start = new Date(now.getFullYear(), 0, 0);
-  return Math.floor((now - start) / (1000 * 60 * 60 * 24));
-}
+function getDayOfYear() { const now = new Date(); const start = new Date(now.getFullYear(), 0, 0); return Math.floor((now - start) / (1000 * 60 * 60 * 24)); }
 function getDailyQuote() { return QUOTES[getDayOfYear() % QUOTES.length]; }
-function updateQuote() {
-  const q = getDailyQuote();
-  $quoteText.textContent = `"${q.text}"`; $quoteAuthor.textContent = `— ${q.author}`;
-}
+function updateQuote() { const q = getDailyQuote(); $quoteText.textContent = `"${q.text}"`; $quoteAuthor.textContent = `— ${q.author}`; }
 
-// ============ 任务输入监听 ============
-$taskInput.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') { addTask($taskInput.value); $taskInput.value = ''; }
-});
-
-// ============ 键盘快捷键 ============
+// ============ 输入监听 ============
+$taskInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { addTask($taskInput.value); $taskInput.value = ''; } });
 document.addEventListener('keydown', (e) => {
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
-  switch(e.code) {
-    case 'Space': e.preventDefault(); toggleTimer(); break;
-    case 'KeyR': resetTimer(); break;
-    case 'KeyS': skipTimer(); break;
-    case 'Digit1': switchMode('work'); break;
-    case 'Digit2': switchMode('shortbreak'); break;
-    case 'Digit3': switchMode('longbreak'); break;
-  }
+  switch(e.code) { case 'Space': e.preventDefault(); toggleTimer(); break; case 'KeyR': resetTimer(); break; case 'KeyS': skipTimer(); break; case 'Digit1': switchMode('work'); break; case 'Digit2': switchMode('shortbreak'); break; case 'Digit3': switchMode('longbreak'); break; }
 });
-
-// ============ 通知权限 ============
-if ('Notification' in window && Notification.permission === 'default') {
-  setTimeout(() => Notification.requestPermission(), 3000);
-}
-
-// ============ 启动 ============
-init();
-updateModeUI();
-document.title = '🍅 番茄钟';
+if ('Notification' in window && Notification.permission === 'default') { setTimeout(() => Notification.requestPermission(), 3000); }
+init(); updateModeUI(); document.title = '🍅 番茄钟';
 </script>
-
 </body>
 </html>
